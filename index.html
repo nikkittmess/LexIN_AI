@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> — Indian Legal Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0c09;
+    --surface: #161310;
+    --surface2: #1e1a15;
+    --border: #2e2820;
+    --border2: #3d3528;
+    --gold: #c9a84c;
+    --gold2: #e8c87a;
+    --gold-dim: rgba(201, 168, 76, 0.12);
+    --gold-glow: rgba(201, 168, 76, 0.06);
+    --text: #e8e0d0;
+    --text2: #a89880;
+    --text3: #6b5f50;
+    --red: #c0392b;
+    --green: #27ae60;
+    --radius: 4px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Subtle paper texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23noise)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(to bottom, #13100c, var(--bg));
+    flex-shrink: 0;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-emblem {
+    width: 38px;
+    height: 38px;
+    border: 1.5px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--gold);
+    position: relative;
+  }
+
+  .logo-emblem::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    border: 1px solid var(--border2);
+  }
+
+  .logo-text h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold2);
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  .logo-text span {
+    font-size: 10px;
+    color: var(--text3);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 400;
+  }
+
+  .header-badges {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .badge {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+    font-weight: 500;
+  }
+
+  .badge-gold {
+    background: var(--gold-dim);
+    border: 1px solid rgba(201, 168, 76, 0.3);
+    color: var(--gold);
+  }
+
+  .badge-status {
+    background: rgba(39, 174, 96, 0.1);
+    border: 1px solid rgba(39, 174, 96, 0.25);
+    color: #5dbb80;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  .status-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #5dbb80;
+    animation: pulse 2.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 240px;
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    background: var(--surface);
+    padding: 20px 0;
+    overflow-y: auto;
+  }
+
+  .sidebar-section {
+    padding: 0 16px 20px;
+  }
+
+  .sidebar-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text3);
+    font-weight: 500;
+    margin-bottom: 10px;
+    padding-left: 4px;
+  }
+
+  .topic-btn {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: var(--radius);
+    padding: 8px 10px;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2px;
+  }
+
+  .topic-btn:hover {
+    background: var(--gold-glow);
+    border-color: var(--border2);
+    color: var(--text);
+  }
+
+  .topic-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 16px 20px;
+  }
+
+  .source-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 4px;
+    font-size: 11.5px;
+    color: var(--text3);
+  }
+
+  .source-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  .disclaimer-box {
+    margin: 0 16px;
+    padding: 10px 12px;
+    background: rgba(192, 57, 43, 0.06);
+    border: 1px solid rgba(192, 57, 43, 0.2);
+    border-radius: var(--radius);
+    font-size: 10.5px;
+    color: #c87a6a;
+    line-height: 1.5;
+  }
+
+  /* ── CHAT AREA ── */
+  .chat-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 32px;
+    scroll-behavior: smooth;
+  }
+
+  .messages::-webkit-scrollbar { width: 4px; }
+  .messages::-webkit-scrollbar-track { background: transparent; }
+  .messages::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  /* Welcome screen */
+  .welcome {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-align: center;
+    gap: 16px;
+    animation: fadeIn 0.6s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .welcome-seal {
+    width: 72px;
+    height: 72px;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    margin-bottom: 4px;
+    background: var(--gold-glow);
+    box-shadow: 0 0 30px rgba(201, 168, 76, 0.1);
+  }
+
+  .welcome h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .welcome p {
+    font-size: 14px;
+    color: var(--text2);
+    max-width: 460px;
+    line-height: 1.7;
+  }
+
+  .quick-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 8px;
+    max-width: 560px;
+  }
+
+  .pill {
+    padding: 8px 14px;
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--surface);
+  }
+
+  .pill:hover {
+    border-color: var(--gold);
+    color: var(--gold2);
+    background: var(--gold-glow);
+  }
+
+  /* Messages */
+  .message {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 24px;
+    animation: msgIn 0.3s ease;
+  }
+
+  @keyframes msgIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .msg-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    margin-top: 2px;
+  }
+
+  .msg-avatar.user {
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text2);
+  }
+
+  .msg-avatar.bot {
+    background: var(--gold-dim);
+    border: 1px solid rgba(201, 168, 76, 0.3);
+    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+  }
+
+  .msg-content {
+    flex: 1;
+  }
+
+  .msg-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .msg-name {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text3);
+  }
+
+  .msg-name.bot-name { color: var(--gold); }
+
+  .msg-time {
+    font-size: 10px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .msg-bubble {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+
+  .msg-bubble.user {
+    background: var(--surface2);
+    border-color: var(--border2);
+  }
+
+  .msg-bubble.bot {
+    border-color: rgba(201, 168, 76, 0.15);
+  }
+
+  /* Legal formatting */
+  .msg-bubble h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    color: var(--gold2);
+    margin: 12px 0 6px;
+    font-weight: 600;
+  }
+
+  .msg-bubble h3:first-child { margin-top: 0; }
+
+  .msg-bubble strong {
+    color: var(--gold2);
+    font-weight: 500;
+  }
+
+  .msg-bubble ul, .msg-bubble ol {
+    padding-left: 20px;
+    margin: 8px 0;
+  }
+
+  .msg-bubble li {
+    margin-bottom: 5px;
+    color: var(--text2);
+  }
+
+  .provision-tag {
+    display: inline-block;
+    background: var(--gold-dim);
+    border: 1px solid rgba(201, 168, 76, 0.25);
+    color: var(--gold);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 2px;
+    margin: 0 2px;
+  }
+
+  .sources-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .source-chip {
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border2);
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* Typing indicator */
+  .typing-dots {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    padding: 4px 0;
+  }
+
+  .typing-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: dot 1.4s infinite;
+    opacity: 0.4;
+  }
+
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes dot {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.1); }
+  }
+
+  /* ── INPUT AREA ── */
+  .input-area {
+    padding: 16px 24px 20px;
+    border-top: 1px solid var(--border);
+    background: linear-gradient(to top, #0e0c09, transparent);
+    flex-shrink: 0;
+  }
+
+  .input-wrapper {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: 10px 12px;
+    transition: border-color 0.2s;
+  }
+
+  .input-wrapper:focus-within {
+    border-color: rgba(201, 168, 76, 0.4);
+  }
+
+  #userInput {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    resize: none;
+    line-height: 1.5;
+    min-height: 22px;
+    max-height: 140px;
+  }
+
+  #userInput::placeholder { color: var(--text3); }
+
+  .send-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius);
+    background: var(--gold);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    color: #0e0c09;
+  }
+
+  .send-btn:hover { background: var(--gold2); transform: scale(1.05); }
+  .send-btn:disabled { background: var(--border2); color: var(--text3); cursor: not-allowed; transform: none; }
+
+  .send-btn svg { width: 16px; height: 16px; }
+
+  .input-hint {
+    font-size: 10px;
+    color: var(--text3);
+    text-align: center;
+    margin-top: 8px;
+    letter-spacing: 0.05em;
+  }
+
+  /* Error state */
+  .error-bubble {
+    background: rgba(192, 57, 43, 0.08) !important;
+    border-color: rgba(192, 57, 43, 0.25) !important;
+    color: #c87a6a !important;
+  }
+
+  /* Scrollbar */
+  .sidebar::-webkit-scrollbar { width: 3px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border2); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-emblem">न्</div>
+    <div class="logo-text">
+      <h1>Vakeel</h1>
+      <span>Indian Legal Intelligence</span>
+    </div>
+  </div>
+  <div class="header-badges">
+    <span class="badge badge-gold">Constitution of India</span>
+    <span class="badge badge-status"><span class="status-dot"></span>Live Updates</span>
+  </div>
+</header>
+
+<div class="layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Legal Topics</div>
+      <button class="topic-btn" onclick="setQuery('What are the Fundamental Rights under the Indian Constitution?')">
+        <span class="topic-icon">⚖️</span> Fundamental Rights
+      </button>
+      <button class="topic-btn" onclick="setQuery('Explain Article 370 and its abrogation')">
+        <span class="topic-icon">📜</span> Article 370
+      </button>
+      <button class="topic-btn" onclick="setQuery('What is the right to privacy in India and recent judgements?')">
+        <span class="topic-icon">🔒</span> Right to Privacy
+      </button>
+      <button class="topic-btn" onclick="setQuery('Explain the POCSO Act and its provisions')">
+        <span class="topic-icon">🛡️</span> POCSO Act
+      </button>
+      <button class="topic-btn" onclick="setQuery('What is the process for filing a PIL in India?')">
+        <span class="topic-icon">🏛️</span> PIL Process
+      </button>
+      <button class="topic-btn" onclick="setQuery('What are the sedition laws in India and recent changes?')">
+        <span class="topic-icon">📋</span> Sedition Law
+      </button>
+      <button class="topic-btn" onclick="setQuery('Explain GST and recent Supreme Court rulings on it')">
+        <span class="topic-icon">💼</span> GST & Tax Law
+      </button>
+      <button class="topic-btn" onclick="setQuery('What is the Citizenship Amendment Act and its legal challenges?')">
+        <span class="topic-icon">🗂️</span> CAA & NRC
+      </button>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Sources</div>
+      <div class="source-item"><span class="source-dot"></span> Constitution of India</div>
+      <div class="source-item"><span class="source-dot"></span> Supreme Court Judgements</div>
+      <div class="source-item"><span class="source-dot"></span> Bar & Bench</div>
+      <div class="source-item"><span class="source-dot"></span> Live Law</div>
+      <div class="source-item"><span class="source-dot"></span> Barandbench.com</div>
+      <div class="source-item"><span class="source-dot"></span> The Wire (Legal)</div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="disclaimer-box">
+        ⚠️ Vakeel AI provides legal information, not legal advice. Consult a qualified advocate for specific legal matters.
+      </div>
+    </div>
+  </aside>
+
+  <!-- CHAT -->
+  <div class="chat-area">
+    <div class="messages" id="messages">
+      <div class="welcome" id="welcome">
+        <div class="welcome-seal">⚖️</div>
+        <h2>वकील — Justice Illuminated</h2>
+        <p>Ask me anything about the Constitution of India, landmark judgements, recent legal developments, or any matter of Indian law. I draw from trusted legal sources and stay updated with current events.</p>
+        <div class="quick-pills">
+          <span class="pill" onclick="setQuery('What are Directive Principles of State Policy?')">Directive Principles</span>
+          <span class="pill" onclick="setQuery('Explain the collegium system for judge appointments')">Collegium System</span>
+          <span class="pill" onclick="setQuery('What is habeas corpus in Indian law?')">Habeas Corpus</span>
+          <span class="pill" onclick="setQuery('Recent changes to criminal law in India 2024')">New Criminal Laws 2024</span>
+          <span class="pill" onclick="setQuery('What is UAPA and how is it applied?')">UAPA</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <div class="input-wrapper">
+        <textarea id="userInput" placeholder="Ask about any provision, judgement, or legal development in India…" rows="1"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+      <div class="input-hint">Press Enter to send · Shift+Enter for new line</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SYSTEM_PROMPT = `You are Vakeel, an expert Indian legal assistant with deep knowledge of:
+- The Constitution of India (all Articles, Schedules, Amendments)
+- Supreme Court and High Court landmark judgements
+- Central and State legislation (IPC, CrPC, POCSO, UAPA, RTI, CAA, etc.)
+- Recent legal developments from trusted sources like Live Law, Bar & Bench, Supreme Court Observer
+- Legal procedures: PIL, bail, appeals, habeas corpus, writs, etc.
+
+RESPONSE GUIDELINES:
+1. Use web search to retrieve the most current legal news and judgements when relevant.
+2. Always cite specific Articles, Sections, or legal provisions using exact references (e.g., Article 21, Section 124A IPC).
+3. Structure responses clearly: start with a brief direct answer, then provide context, provisions, and recent developments.
+4. Mention landmark cases by name and year (e.g., Kesavananda Bharati v. State of Kerala, 1973).
+5. For recent events (2024-2025), search the web for the latest information.
+6. Note when something is contested, pending, or has evolved through amendments.
+7. End with a note about consulting a qualified advocate for specific legal advice when appropriate.
+8. Use clear, accessible language while maintaining legal precision.
+9. Format provisions in a highlighted way: "**Article X:** [description]"
+10. Always prioritize accuracy over speculation. If uncertain, say so.
+
+You draw from the Constitution of India, Supreme Court orders, Gazette notifications, and reputable Indian legal news platforms.`;
+
+let conversationHistory = [];
+let isLoading = false;
+
+function getTime() {
+  return new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+}
+
+function setQuery(text) {
+  document.getElementById('userInput').value = text;
+  autoResize(document.getElementById('userInput'));
+  document.getElementById('userInput').focus();
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+}
+
+document.getElementById('userInput').addEventListener('input', function() {
+  autoResize(this);
+});
+
+document.getElementById('userInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+});
+
+function formatResponse(text) {
+  // Convert **text** to bold
+  text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  // Convert # headings
+  text = text.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  text = text.replace(/^## (.+)$/gm, '<h3>$1</h3>');
+  // Convert bullet lists
+  text = text.replace(/^[\-\*] (.+)$/gm, '<li>$1</li>');
+  text = text.replace(/(<li>.*<\/li>\n?)+/gs, (m) => `<ul>${m}</ul>`);
+  // Convert numbered lists
+  text = text.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+  // Highlight Article/Section references
+  text = text.replace(/(Article\s+\d+[A-Z]?(-\d+)?(\(\d+\))?|Section\s+\d+[A-Z]?|Schedule\s+[IVX]+)/g, '<span class="provision-tag">$1</span>');
+  // Paragraphs
+  text = text.split(/\n\n+/).map(p => {
+    p = p.trim();
+    if (!p || p.startsWith('<')) return p;
+    return `<p style="margin-bottom:8px">${p}</p>`;
+  }).join('\n');
+  return text;
+}
+
+function addMessage(role, content, isError = false) {
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'message';
+
+  if (role === 'user') {
+    div.innerHTML = `
+      <div class="msg-avatar user">👤</div>
+      <div class="msg-content">
+        <div class="msg-meta">
+          <span class="msg-name">You</span>
+          <span class="msg-time">${getTime()}</span>
+        </div>
+        <div class="msg-bubble user">${content.replace(/\n/g, '<br>')}</div>
+      </div>`;
+  } else {
+    const formatted = isError ? content : formatResponse(content);
+    div.innerHTML = `
+      <div class="msg-avatar bot">न्</div>
+      <div class="msg-content">
+        <div class="msg-meta">
+          <span class="msg-name bot-name">Vakeel</span>
+          <span class="msg-time">${getTime()}</span>
+        </div>
+        <div class="msg-bubble bot ${isError ? 'error-bubble' : ''}">${formatted}
+          ${!isError ? `<div class="sources-row">
+            <span class="source-chip">Constitution of India</span>
+            <span class="source-chip">SC Judgements</span>
+            <span class="source-chip">Live Law</span>
+            <span class="source-chip">Bar & Bench</span>
+          </div>` : ''}
+        </div>
+      </div>`;
+  }
+
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function addTyping() {
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  const msgs = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'message';
+  div.id = 'typing';
+  div.innerHTML = `
+    <div class="msg-avatar bot">न्</div>
+    <div class="msg-content">
+      <div class="msg-meta">
+        <span class="msg-name bot-name">Vakeel</span>
+        <span class="msg-time">Researching…</span>
+      </div>
+      <div class="msg-bubble bot">
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+      </div>
+    </div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing');
+  if (t) t.remove();
+}
+
+async function sendMessage() {
+  if (isLoading) return;
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  addMessage('user', text);
+  conversationHistory.push({ role: 'user', content: text });
+  addTyping();
+
+  try {
+    const response = await fetch('https://vakeel-proxy.nikkittmessi.workers.dev', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    model: 'llama-3.3-70b-versatile',
+    max_tokens: 1000,
+    messages: [
+      { role: 'system', content: SYSTEM_PROMPT },
+      ...conversationHistory
+    ]
+  })
+});
+
+const data = await response.json();
+
+if (!response.ok) throw new Error(data.error?.message || 'API error');
+
+const fullText = data.choices[0].message.content;
+
+removeTyping();
+conversationHistory.push({ role: 'assistant', content: fullText });
+addMessage('assistant', fullText || 'Unable to get a response. Please try again.');
+
+  } catch (err) {
+    removeTyping();
+    addMessage('assistant', `⚠️ Error: ${err.message}. Please check your API key configuration and try again.`, true);
+  } finally {
+    isLoading = false;
+    document.getElementById('sendBtn').disabled = false;
+    input.focus();
+  }
+}
+</script>
+</body>
+</html>
+G
